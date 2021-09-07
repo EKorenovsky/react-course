@@ -2,7 +2,6 @@ import React, { Component, PureComponent } from 'react';
 
 class Article extends PureComponent {
     state = {
-        isOpen: this.props.defaultOpen,
         count: 0
     }
 
@@ -10,9 +9,15 @@ class Article extends PureComponent {
         this.setState({ count: this.state.count + 1 });
     }
 
-    handleOnClick = () => {
-        this.setState({ isOpen: !this.state.isOpen })
+    handleOnClick = (event) => {
+       //event.stopPropagation();
+       if (this.props.isOpen) 
+            this.props.onClose(this.props.article.id);
+        else 
+            this.props.onOpen(this.props.article.id); 
     }
+
+
 
     // shouldComponentUpdate = (nextProps, nextState) => {
     //     return (this.state.isOpen !== nextState.isOpen);
@@ -23,12 +28,12 @@ class Article extends PureComponent {
         console.log('---', 'mounting');
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        console.log('---', 'componentWillReceiveProps');
-        if (nextProps.defaultOpen !== this.props.defaultOpen) {
-            this.setState({ isOpen: nextProps.defaultOpen })
-        }
-    }
+    // componentWillReceiveProps = (nextProps) => {
+    //     console.log('---', 'componentWillReceiveProps');
+    //     if (nextProps.defaultOpen !== this.props.defaultOpen) {
+    //         this.setState({ isOpen: nextProps.defaultOpen })
+    //     }
+    // }
 
     componentWillUpdate = () => {
         console.log('---', 'update');
@@ -36,14 +41,14 @@ class Article extends PureComponent {
 
 
     render() {
-        const { article } = this.props;
+        const { article, isOpen } = this.props;
         const style = { width: '50%' };
-        const body = this.state.isOpen && <section className="card-text" >{article.text}</section>
+        const body = isOpen && <section className="card-text" >{article.text}</section>
         return (
             <div className="card mx-auto mb-1" style={style}>
                 <div className="card-header">
                     <h2 onClick={this.incrementClick} >{article.title} click: {this.state.count}
-                        <button className="btn btn-primary btn-lg float-end" onClick={this.handleOnClick}>{(this.state.isOpen) ? 'Close' : 'Open'}</button>
+                        <button className="btn btn-primary btn-lg float-end" onClick={this.handleOnClick}>{(isOpen) ? 'Close' : 'Open'}</button>
                     </h2>
                 </div>
                 <div className="card-body">
